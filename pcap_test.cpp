@@ -19,11 +19,11 @@ ether_header set_eheader(const uint8_t *packet){
     ether_header header;
     int h_count=0;
     for (int i = 0; i<6; i++){
-        header.ether_dhost.ether_addr_octet[i] = packet[h_count];
+        header.ether_dhost[i] = packet[h_count];
         h_count++;
     }
     for (int i = 0; i<6; i++){
-        header.ether_shost.ether_addr_octet[i] = packet[h_count];
+        header.ether_shost[i] = packet[h_count];
         h_count++;
     }
     header.ether_type = (packet[h_count] <<8) | packet[h_count+1];
@@ -32,24 +32,24 @@ ether_header set_eheader(const uint8_t *packet){
 }
 
 void pr_mac(ether_header header, int idx){
-    if(idx== ether_dhost_idx)printf("Destination MAC : ");
-    else printf("Source MAC : ");
+    if(idx== ether_dhost_idx)printf("Destination MAC : \t");
+    else printf("     Source MAC : \t");
     for (int i=0; i<6; i++){
         if(idx== ether_dhost_idx){
-            if(header.ether_dhost.ether_addr_octet[i] < 0x10){
-                printf("0%X",header.ether_dhost.ether_addr_octet[i]);
+            if(header.ether_dhost[i] < 0x10){
+                printf("0%X",header.ether_dhost[i]);
             }
             else {
-                printf("%2X", header.ether_dhost.ether_addr_octet[i]);
+                printf("%2X", header.ether_dhost[i]);
             }
 
         }
         else {
-            if(header.ether_shost.ether_addr_octet[i] < 0x10){
-                printf("0%x",header.ether_shost.ether_addr_octet[i]);
+            if(header.ether_shost[i] < 0x10){
+                printf("0%x",header.ether_shost[i]);
             }
             else{
-                printf("%2x", header.ether_shost.ether_addr_octet[i]);
+                printf("%2x", header.ether_shost[i]);
             }
         }
         if(i!=5){
@@ -70,11 +70,11 @@ ip_header set_iheader(const uint8_t *packet){
     header.protocol = packet[h_count];
     h_count = h_count+3;
     for(int i=0; i<4; i++){
-        header.s_ip.ip_addr_octet[i] = packet[h_count];
+        header.s_ip[i] = packet[h_count];
         h_count++;
     }
     for(int i=0; i<4; i++){
-        header.d_ip.ip_addr_octet[i] = packet[h_count];
+        header.d_ip[i] = packet[h_count];
         h_count++;
     }
 
@@ -83,21 +83,19 @@ ip_header set_iheader(const uint8_t *packet){
 
 void pr_ip(ip_header header, int idx){
     if(idx==ip_s_addr_idx){
-        printf("Destination IP : ");
-        printf("%u.%u.%u.%u\n", header.d_ip.ip_addr_octet[0], header.d_ip.ip_addr_octet[1], header.d_ip.ip_addr_octet[2], header.d_ip.ip_addr_octet[3]);
+        printf("Destination IP : \t");
+        printf("%u.%u.%u.%u\n", header.d_ip[0], header.d_ip[1], header.d_ip[2], header.d_ip[3]);
     }
     if(idx==ip_d_addr_idx){
-        printf("Source IP : ");
-        printf("%u.%u.%u.%u\n", header.s_ip.ip_addr_octet[0], header.s_ip.ip_addr_octet[1], header.s_ip.ip_addr_octet[2], header.s_ip.ip_addr_octet[3]);
+        printf("     Source IP : \t");
+        printf("%u.%u.%u.%u\n", header.s_ip[0], header.s_ip[1], header.s_ip[2], header.s_ip[3]);
     }
 }
 
 tcp_header set_theader(const uint8_t *packet){
     tcp_header header;
     int h_count=0;
-
     header.s_port = (packet[h_count] <<8) | packet[h_count+1];
-
     h_count= h_count+2;
     header.d_port = (packet[h_count] <<8) | packet[h_count+1];
     h_count= h_count+10;
@@ -107,9 +105,9 @@ tcp_header set_theader(const uint8_t *packet){
 
 void pr_port(tcp_header header, int idx){
     if(idx==s_port_idx){
-        printf("Source port : %d\n", header.s_port);
+        printf("     Source port :\t%d\n", header.s_port);
     }
     if(idx==s_port_idx){
-        printf("Destination port : %d\n", header.d_port);
+        printf("Destination port :\t%d\n", header.d_port);
     }
 }

@@ -30,8 +30,8 @@ struct ip_addr{
 };
 
 struct ether_header{
-    struct ether_addr ether_dhost;
-    struct ether_addr ether_shost;
+    uint8_t ether_dhost[6];
+    uint8_t ether_shost[6];
     uint16_t ether_type;
 };
 
@@ -39,8 +39,8 @@ struct ip_header{
     uint8_t header_len;
     uint8_t protocol;
     uint16_t total_len;
-    struct ip_addr d_ip;
-    struct ip_addr s_ip;
+    uint8_t d_ip[4];
+    uint8_t s_ip[4];
 };
 
 struct tcp_header{
